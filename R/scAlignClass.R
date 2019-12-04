@@ -61,6 +61,8 @@ scAlignCreateObject = function(sce.objects,
                                cca.reduce = FALSE,
                                ccs.compute = 15,
                                cca.standardize = TRUE,
+                               pcpca.reduce = TRUE,
+                               pcpcs.compute = 20,
                                data.use = "scale.data",
                                project.name = "scAlignProject"){
 
@@ -174,6 +176,12 @@ scAlignCreateObject = function(sce.objects,
         assay(seurat.obj, slot='scale.data')[genes.use,]
     })
     reducedDim(combined.sce, "MultiCCA") = RunMultiCCA(multi.cca.input, num.ccs = ccs.compute, standardize = cca.standardize)
+  }
+  if(pcpca.reduce == TRUE){
+    pcpca.input <- lapply(sce.objects, function(seurat.obj){
+        assay(seurat.obj, slot='scale.data')[genes.use,]
+    })
+    reducedDim(combined.sce, "PCPCA") = PCPCA(pcpca.input, pcpcs.compute)
   }
   return(combined.sce)
 }
